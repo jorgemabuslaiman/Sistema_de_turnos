@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Centro Odontológico Sonrisas & Salud - Agenda Virtual</title>
+    
+    <!-- Google Identity Services (GIS) para Login con Google -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Google Fonts: Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Estilos personalizados responsivos y de accesibilidad -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- ENLACE DE ACCESIBILIDAD PARA LECTORES DE PANTALLA -->
+    <a href="#mainContent" class="skip-link">Saltar al contenido principal</a>
+
+    <!-- NAVBAR PRINCIPAL -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-custom sticky-top" role="navigation" aria-label="Menú principal de navegación">
+            <div class="container-fluid px-lg-4">
+                <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="window.app.switchTab('reserva-tab')">
+                    <span class="brand-icon" aria-hidden="true">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17 2.5c-1.5 0-2.8.8-3.5 2-.7-1.2-2-2-3.5-2C6.5 2.5 4 4.5 4 7c0 2.5.7 5.2 1.4 8 .7 2.8 1.6 6 3.6 6 1.3 0 2-2 3-2s1.7 2 3 2c2 0 2.9-3.2 3.6-6 .7-2.8 1.4-5.5 1.4-8 0-2.5-2.5-4.5-6-4.5z"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <span class="fw-bold fs-5 text-primary brand-clinic-name d-none d-sm-inline">Centro Odontológico Sonrisas & Salud</span>
+                        <span class="fw-bold fs-6 text-primary brand-clinic-name d-inline d-sm-none">Sonrisas & Salud</span>
+                        <span class="d-none d-sm-block text-muted small" style="font-size: 0.75rem;">Agenda Virtual Multiprofesional</span>
+                    </div>
+                </a>
+
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Alternar navegación">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <!-- Pestañas de Navegación por Rol -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav-pills ms-lg-3 gap-1" role="tablist">
+                        <li class="nav-item" id="navItemReserva">
+                            <a class="nav-link active" href="#" data-tab="reserva-tab" role="tab" onclick="window.app.switchTab('reserva-tab'); return false;">
+                                <i class="bi bi-calendar-plus-fill me-1" aria-hidden="true"></i> Inicio y Turnos
+                            </a>
+                        </li>
+                        <li class="nav-item" id="navItemMisTurnos">
+                            <a class="nav-link d-inline-flex align-items-center gap-2" href="#" data-tab="misturnos-tab" role="tab" onclick="window.app.switchTab('misturnos-tab'); return false;">
+                                <span class="d-inline-flex align-items-center gap-1">
+                                    <i class="bi bi-calendar2-check-fill text-primary" aria-hidden="true"></i>
+                                    <span>Mis Turnos</span>
+                                </span>
+                                <span class="badge rounded-pill bg-primary text-white shadow-sm d-none" id="navBadgeMyTurnosCount">0</span>
+                            </a>
+                        </li>
+                        <!-- Pestaña Secretaría (Para Recepción y Admin) -->
+                        <li class="nav-item d-none" id="navItemSecretary">
+                            <a class="nav-link" href="#" data-tab="secretaria-tab" role="tab" onclick="window.app.switchTab('secretaria-tab'); return false;">
+                                <i class="bi bi-inboxes-fill me-1" aria-hidden="true"></i> Secretaría / Recepción
+                            </a>
+                        </li>
+                        <!-- Pestaña Profesional (Odontólogos) -->
+                        <li class="nav-item d-none" id="navItemProf">
+                            <a class="nav-link" href="#" data-tab="profesional-tab" role="tab" onclick="window.app.switchTab('profesional-tab'); return false;">
+                                <i class="bi bi-person-badge-fill me-1" aria-hidden="true"></i> Panel Profesional
+                            </a>
+                        </li>
+                        <!-- Pestaña Administrador -->
+                        <li class="nav-item d-none" id="navItemAdmin">
+                            <a class="nav-link" href="#" data-tab="admin-tab" role="tab" onclick="window.app.switchTab('admin-tab'); return false;">
+                                <i class="bi bi-shield-lock-fill me-1" aria-hidden="true"></i> Administración
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Controles de Usuario -->
+                    <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+                        <!-- Selector Rápido de Roles (Demostración y Pruebas) -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-people-fill text-primary" aria-hidden="true"></i>
+                                <span class="small d-none d-md-inline">Probar Rol</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="min-width: 280px;">
+                                <li class="dropdown-header small text-uppercase fw-bold">Roles de Prueba & Demostración</li>
+                                <li><a class="dropdown-item small" href="#" onclick="window.authService.loginAs('secretaria')"><i class="bi bi-clipboard2-pulse text-info me-2"></i>Ana López (Secretaría / Recepción)</a></li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li class="dropdown-header small text-uppercase fw-bold text-muted" style="font-size: 0.72rem;">Odontólogos Especialistas</li>
+                                <li><a class="dropdown-item small" href="#" onclick="window.authService.loginAs('prof_1')"><i class="bi bi-person-badge text-primary me-2"></i>Dra. Gómez (Ortodoncia - Consultorio A)</a></li>
+                                <li><a class="dropdown-item small" href="#" onclick="window.authService.loginAs('prof_2')"><i class="bi bi-person-badge text-primary me-2"></i>Dr. Morales (Implantes - Consultorio B)</a></li>
+                                <li><a class="dropdown-item small" href="#" onclick="window.authService.loginAs('prof_3')"><i class="bi bi-person-badge text-primary me-2"></i>Dra. Valenzuela (Odontopediatría - C)</a></li>
+                                <li><a class="dropdown-item small" href="#" onclick="window.authService.loginAs('prof_4')"><i class="bi bi-person-badge text-primary me-2"></i>Dr. Rossi (Endodoncia - Consultorio D)</a></li>
+                                <li><a class="dropdown-item small" href="#" onclick="window.authService.loginAs('prof_5')"><i class="bi bi-person-badge text-primary me-2"></i>Dra. Benítez (Periodoncia - Consultorio E)</a></li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li><a class="dropdown-item small" href="#" onclick="window.authService.loginAs('admin')"><i class="bi bi-shield-lock text-danger me-2"></i>Martín Bossi (Administrador General)</a></li>
+                                <li><a class="dropdown-item small" href="#" onclick="window.authService.loginAs('paciente')"><i class="bi bi-person text-success me-2"></i>Lucas Martínez (Paciente Registrado)</a></li>
+                                <li><a class="dropdown-item small fw-bold text-dark" href="#" onclick="window.authService.loginAs('invitado')"><i class="bi bi-person-x text-primary me-2"></i>Usuario Sin Cuenta (Visitante Anónimo)</a></li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li><a class="dropdown-item small" href="#" onclick="new bootstrap.Modal(document.getElementById('demoLoginModal')).show()"><i class="bi bi-google text-danger me-2"></i>Simular otra cuenta Google</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Botón de Iniciar Sesión con Google -->
+                        <button class="btn btn-primary d-flex align-items-center gap-2" id="btnLoginNav" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="bi bi-google" aria-hidden="true"></i>
+                            <span>Iniciar Sesión</span>
+                        </button>
+
+                        <!-- Perfil de Usuario Logueado -->
+                        <div class="dropdown d-none" id="userNavContainer">
+                            <button class="btn btn-light border d-flex align-items-center gap-2 dropdown-toggle py-1 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="https://ui-avatars.com/api/?name=U" id="navUserAvatar" class="rounded-circle" width="32" height="32" alt="Foto de perfil">
+                                <div class="text-start d-none d-sm-block">
+                                    <span class="fw-semibold small d-block" id="navUserName">Usuario</span>
+                                    <span class="badge bg-secondary" id="navUserRoleBadge">Rol</span>
+                                </div>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li class="dropdown-item-text text-muted small">Sesión activa</li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger small" href="#" onclick="window.authService.logout()">
+                                        <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>Cerrar Sesión
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="container my-4" id="mainContent" role="main">
+
+        <!-- ========================================================== -->
+        <!-- SECCIÓN 1: INICIO PARA PACIENTES (INTRO, CARRUSEL & 2 BOTONES) -->
+        <!-- ========================================================== -->
+        <section id="reserva-tab" class="app-section">
+            
+            <!-- INTRO DEL CENTRO ODONTOLÓGICO -->
+            <div class="text-center mb-4">
+                <span class="badge bg-primary-subtle text-primary px-3 py-1 fw-bold rounded-pill mb-2">
+                    <i class="bi bi-hospital me-1"></i> Atención Odontológica Integral
+                </span>
+                <h1 class="display-5 fw-bold text-primary brand-clinic-name">Centro Odontológico Sonrisas & Salud</h1>
+                <p class="text-muted lead mx-auto mb-3" style="max-width: 680px;">
+                    Contamos con equipamiento de avanzada y profesionales especialistas en cada rama de la salud bucal.
+                </p>
+
+                <!-- Especialidades del Centro -->
+                <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                    <span class="badge bg-white text-dark border shadow-sm px-3 py-2 fs-6"><i class="bi bi-stars text-primary me-1"></i> Ortodoncia</span>
+                    <span class="badge bg-white text-dark border shadow-sm px-3 py-2 fs-6"><i class="bi bi-shield-plus text-primary me-1"></i> Implantología</span>
+                    <span class="badge bg-white text-dark border shadow-sm px-3 py-2 fs-6"><i class="bi bi-emoji-smile text-primary me-1"></i> Odontopediatría</span>
+                    <span class="badge bg-white text-dark border shadow-sm px-3 py-2 fs-6"><i class="bi bi-activity text-primary me-1"></i> Endodoncia</span>
+                    <span class="badge bg-white text-dark border shadow-sm px-3 py-2 fs-6"><i class="bi bi-gem text-primary me-1"></i> Periodoncia y Estética</span>
+                </div>
+            </div>
+
+            <!-- CARRUSEL AUTOMÁTICO DE LOS 5 PROFESIONALES (ADAPTADO BOOTSTRAP) -->
+            <div id="carouselProfessionals" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-touch="true">
+                <div class="carousel-inner rounded-5 shadow-sm" id="carouselProfessionalsInner">
+                    <!-- Profesional 1 -->
+                    <div class="carousel-item active" data-bs-interval="4500">
+                        <div class="prof-slide-card rounded-5 overflow-hidden shadow-sm mx-auto bg-white border">
+                            <div class="prof-slide-media position-relative">
+                                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&auto=format&fit=crop&q=80" 
+                                     class="prof-slide-img" 
+                                     alt="Dra. María Elena Gómez"
+                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800';">
+                                <span class="badge bg-primary position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill shadow-sm fw-semibold">
+                                    Consultorio A
+                                </span>
+                            </div>
+                            <div class="prof-slide-info p-3 p-md-4 text-center bg-white">
+                                <h3 class="fw-bold mb-1 text-primary">Dra. María Elena Gómez</h3>
+                                <p class="text-secondary mb-2 fw-medium">Ortodoncia y Ortopedia Maxilar</p>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <span class="badge bg-light text-dark border px-3 py-1 small">
+                                        <i class="bi bi-clock me-1 text-primary"></i>Turnos de 30 min
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Profesional 2 -->
+                    <div class="carousel-item" data-bs-interval="4500">
+                        <div class="prof-slide-card rounded-5 overflow-hidden shadow-sm mx-auto bg-white border">
+                            <div class="prof-slide-media position-relative">
+                                <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=800&auto=format&fit=crop&q=80" 
+                                     class="prof-slide-img" 
+                                     alt="Dr. Javier Morales"
+                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800';">
+                                <span class="badge bg-primary position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill shadow-sm fw-semibold">
+                                    Consultorio B
+                                </span>
+                            </div>
+                            <div class="prof-slide-info p-3 p-md-4 text-center bg-white">
+                                <h3 class="fw-bold mb-1 text-primary">Dr. Javier Morales</h3>
+                                <p class="text-secondary mb-2 fw-medium">Implantología y Cirugía Oral</p>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <span class="badge bg-light text-dark border px-3 py-1 small">
+                                        <i class="bi bi-clock me-1 text-primary"></i>Turnos de 45 min
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Profesional 3 -->
+                    <div class="carousel-item" data-bs-interval="4500">
+                        <div class="prof-slide-card rounded-5 overflow-hidden shadow-sm mx-auto bg-white border">
+                            <div class="prof-slide-media position-relative">
+                                <img src="https://images.unsplash.com/photo-1594824813622-487373f7c9e0?w=800&auto=format&fit=crop&q=80" 
+                                     class="prof-slide-img" 
+                                     alt="Dra. Sofía Valenzuela"
+                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800';">
+                                <span class="badge bg-primary position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill shadow-sm fw-semibold">
+                                    Consultorio C
+                                </span>
+                            </div>
+                            <div class="prof-slide-info p-3 p-md-4 text-center bg-white">
+                                <h3 class="fw-bold mb-1 text-primary">Dra. Sofía Valenzuela</h3>
+                                <p class="text-secondary mb-2 fw-medium">Odontopediatría y Prevención Infantil</p>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <span class="badge bg-light text-dark border px-3 py-1 small">
+                                        <i class="bi bi-clock me-1 text-primary"></i>Turnos de 30 min
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Profesional 4 -->
+                    <div class="carousel-item" data-bs-interval="4500">
+                        <div class="prof-slide-card rounded-5 overflow-hidden shadow-sm mx-auto bg-white border">
+                            <div class="prof-slide-media position-relative">
+                                <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=800&auto=format&fit=crop&q=80" 
+                                     class="prof-slide-img" 
+                                     alt="Dr. Fernando Rossi"
+                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800';">
+                                <span class="badge bg-primary position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill shadow-sm fw-semibold">
+                                    Consultorio D
+                                </span>
+                            </div>
+                            <div class="prof-slide-info p-3 p-md-4 text-center bg-white">
+                                <h3 class="fw-bold mb-1 text-primary">Dr. Fernando Rossi</h3>
+                                <p class="text-secondary mb-2 fw-medium">Endodoncia y Tratamiento de Conducto</p>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <span class="badge bg-light text-dark border px-3 py-1 small">
+                                        <i class="bi bi-clock me-1 text-primary"></i>Turnos de 60 min
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Profesional 5 -->
+                    <div class="carousel-item" data-bs-interval="4500">
+                        <div class="prof-slide-card rounded-5 overflow-hidden shadow-sm mx-auto bg-white border">
+                            <div class="prof-slide-media position-relative">
+                                <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&auto=format&fit=crop&q=80" 
+                                     class="prof-slide-img" 
+                                     alt="Dra. Luciana Benítez"
+                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800';">
+                                <span class="badge bg-primary position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill shadow-sm fw-semibold">
+                                    Consultorio E
+                                </span>
+                            </div>
+                            <div class="prof-slide-info p-3 p-md-4 text-center bg-white">
+                                <h3 class="fw-bold mb-1 text-primary">Dra. Luciana Benítez</h3>
+                                <p class="text-secondary mb-2 fw-medium">Periodoncia y Estética Dental</p>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <span class="badge bg-light text-dark border px-3 py-1 small">
+                                        <i class="bi bi-clock me-1 text-primary"></i>Turnos de 30 min
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controles de navegación estilo Bootstrap moderno debajo del carrusel -->
+                <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+                    <button class="btn-icon btn-sm" type="button" data-bs-target="#carouselProfessionals" data-bs-slide="prev" aria-label="Profesional anterior" style="--bs-carousel-control-icon-width: 1rem;">
+                        <span class="carousel-icon-prev" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <div class="carousel-indicators position-static m-0 d-flex align-items-center gap-1 px-2" id="carouselProfessionalsIndicators">
+                        <button type="button" data-bs-target="#carouselProfessionals" data-bs-slide-to="0" class="active" aria-label="Dra. María Elena Gómez"></button>
+                        <button type="button" data-bs-target="#carouselProfessionals" data-bs-slide-to="1" aria-label="Dr. Javier Morales"></button>
+                        <button type="button" data-bs-target="#carouselProfessionals" data-bs-slide-to="2" aria-label="Dra. Sofía Valenzuela"></button>
+                        <button type="button" data-bs-target="#carouselProfessionals" data-bs-slide-to="3" aria-label="Dr. Fernando Rossi"></button>
+                        <button type="button" data-bs-target="#carouselProfessionals" data-bs-slide-to="4" aria-label="Dra. Luciana Benítez"></button>
+                    </div>
+                    <button class="btn-icon btn-sm" type="button" data-bs-target="#carouselProfessionals" data-bs-slide="next" aria-label="Siguiente profesional" style="--bs-carousel-control-icon-width: 1rem;">
+                        <span class="carousel-icon-next" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN DIRECTOS PARA EL PACIENTE -->
+            <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+                <button type="button" class="btn btn-primary btn-lg px-4 py-3 fw-bold shadow d-flex align-items-center gap-2" id="btnActionBook" onclick="window.app.showBookingView()">
+                    <i class="bi bi-calendar-plus fs-4"></i>
+                    <span>Reservar Turno</span>
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-lg px-4 py-3 fw-bold shadow-sm d-flex align-items-center gap-2" id="btnActionMyTurnos" onclick="window.app.switchTab('misturnos-tab')">
+                    <i class="bi bi-calendar-check fs-4 text-primary"></i>
+                    <span>Mis Turnos y Cancelaciones</span>
+                    <span class="badge rounded-pill bg-primary text-white ms-2 d-none shadow-sm" id="homeBadgeMyTurnosCount" style="font-size: 0.85rem; padding: 0.35em 0.7em;">0</span>
+                </button>
+            </div>
+
+            <!-- ======================================================== -->
+            <!-- VISTA: RESERVAR TURNO EN 2 PASOS CONSECUTIVOS -->
+            <!-- ======================================================== -->
+            <div id="patientBookingSection" class="border-top pt-4">
+                <!-- Indicador de Progreso (Stepper) -->
+                <div class="card shadow-sm border-0 mb-4 bg-light mx-auto" style="max-width: 860px;">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center justify-content-between px-2">
+                            <div id="stepperIndicatorStep1" class="d-flex align-items-center gap-2">
+                                <span class="badge bg-primary rounded-circle p-2 px-3 fs-6" id="badgeStep1Icon">1</span>
+                                <div>
+                                    <span class="d-block fw-bold text-primary small">Paso 1</span>
+                                    <span class="fw-semibold text-dark">Elección de Turno</span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 mx-3 border-top border-2 border-secondary-subtle" style="max-width: 120px;"></div>
+                            <div id="stepperIndicatorStep2" class="d-flex align-items-center gap-2 text-muted">
+                                <span class="badge bg-secondary rounded-circle p-2 px-3 fs-6" id="badgeStep2Icon">2</span>
+                                <div>
+                                    <span class="d-block fw-semibold text-muted small">Paso 2</span>
+                                    <span class="text-muted" id="stepperStep2Subtitle">Datos y Confirmación</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div id="bookingProgressBar" class="progress-bar bg-primary" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================================================== -->
+                <!-- PASO 1: SELECCIÓN DE PROFESIONAL, MOTIVO, DÍA Y HORA -->
+                <!-- ==================================================== -->
+                <div id="bookingStep1Container" class="mx-auto" style="max-width: 860px;">
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                            <h5 class="card-title mb-0 fw-bold text-primary d-flex align-items-center gap-2">
+                                <span class="badge bg-primary rounded-circle">1</span>
+                                <span>Seleccione Odontólogo/a, Motivo y Horario</span>
+                            </h5>
+                            <span class="badge bg-light text-muted border small"><span class="text-danger">*</span> Campos obligatorios</span>
+                        </div>
+                        <div class="card-body p-4">
+                            <!-- 1. Selector de Profesional -->
+                            <div class="mb-3">
+                                <label for="bookingProfSelect" class="form-label fw-semibold">
+                                    <i class="bi bi-person-badge text-primary me-1"></i> Profesional Odontólogo/a <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select form-select-lg" 
+                                        id="bookingProfSelect" 
+                                        onchange="window.patientModule.handleProfessionalChange(this.value)" 
+                                        aria-label="Seleccionar profesional">
+                                    <!-- Opciones cargadas por JS -->
+                                </select>
+                                <div id="error-bookingProfSelect" class="invalid-feedback fw-semibold d-none">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Por favor seleccione un profesional odontólogo/a.
+                                </div>
+                            </div>
+
+                            <!-- Ficha del profesional seleccionado -->
+                            <div id="selectedProfCard" class="mb-4"></div>
+
+                            <!-- 2. Motivo de Consulta (Específico del profesional seleccionado) -->
+                            <div class="mb-3">
+                                <label for="bookingReasonSelect" class="form-label fw-semibold">
+                                    <i class="bi bi-journal-medical text-primary me-1"></i> Motivo de la Consulta <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select form-select-lg" 
+                                        id="bookingReasonSelect" 
+                                        onchange="window.patientModule.handleReasonChange(this.value)" 
+                                        aria-label="Seleccionar motivo">
+                                    <!-- Opciones dinámicas del profesional -->
+                                </select>
+                                <div id="error-bookingReasonSelect" class="invalid-feedback fw-semibold d-none">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Por favor seleccione el motivo de consulta.
+                                </div>
+                            </div>
+
+                            <!-- 3. Selector de Fecha -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="bookingDateInput" class="form-label fw-semibold mb-0">
+                                        <i class="bi bi-calendar-event text-primary me-1"></i> Seleccione el Día de Atención <span class="text-danger">*</span>
+                                    </label>
+                                    <span id="bookingDateFriendlyBadge" class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 small"></span>
+                                </div>
+                                <input type="date" 
+                                       class="form-control form-control-lg" 
+                                       id="bookingDateInput"
+                                       onchange="window.patientModule.handleDateChange(this.value)">
+                                <div id="error-bookingDateInput" class="invalid-feedback fw-semibold d-none">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Por favor elija un día válido para su atención.
+                                </div>
+                            </div>
+
+                            <!-- 4. Grilla de Horarios Disponibles -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold d-flex justify-content-between align-items-center">
+                                    <span><i class="bi bi-clock text-primary me-1"></i> Horarios Disponibles <span class="text-danger">*</span></span>
+                                    <span class="small text-muted">Haga clic sobre un horario libre</span>
+                                </label>
+                                <div id="availableSlotsContainer" class="p-3 bg-light rounded-3 border" role="region" aria-live="polite">
+                                    <!-- Generado dinámicamente -->
+                                </div>
+                                <div id="error-bookingSlot" class="text-danger fw-semibold small mt-2 d-none">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Por favor seleccione un horario libre haciendo clic en uno de los casilleros disponibles.
+                                </div>
+                            </div>
+
+                            <!-- Botón Siguiente al Paso 2 -->
+                            <div class="pt-3 border-top">
+                                <button type="button" 
+                                        id="btnStep1Next" 
+                                        class="btn btn-primary btn-lg w-100 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2" 
+                                        onclick="window.patientModule.goToStep2()">
+                                    <span id="btnStep1NextText">Siguiente: Datos de Contacto</span>
+                                    <i class="bi bi-arrow-right fs-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================================================== -->
+                <!-- PASO 2: DATOS DEL PACIENTE Y CONFIRMACIÓN -->
+                <!-- ==================================================== -->
+                <div id="bookingStep2Container" class="mx-auto d-none" style="max-width: 860px;">
+                    <div class="card shadow-sm border-0 mb-4" id="bookingSummaryCard">
+                        <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                            <h5 class="card-title mb-0 fw-bold text-primary d-flex align-items-center gap-2">
+                                <span class="badge bg-primary rounded-circle">2</span>
+                                <span id="step2CardTitleText">Paso 2: Complete sus Datos y Confirme el Turno</span>
+                            </h5>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.patientModule.backToStep1()">
+                                <i class="bi bi-arrow-left me-1"></i> Modificar Turno
+                            </button>
+                        </div>
+                        <div class="card-body p-4">
+                            <!-- Resumen del Turno Seleccionado en Paso 1 -->
+                            <div id="step2AppointmentSummary" class="mb-4">
+                                <!-- Generado por JS con foto, odontólogo, duración, fecha y hora -->
+                            </div>
+
+                            <!-- Ficha de Paciente Identificado (Solo se muestra cuando el usuario ya inició sesión) -->
+                            <div id="bookingLoggedInUserCard" class="mb-4 d-none">
+                                <!-- Generado por JS para usuarios logueados -->
+                            </div>
+
+                            <!-- Formulario de Datos del Paciente (Solo para pacientes que reservan por primera vez) -->
+                            <div id="bookingContactFieldsContainer">
+                                <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-3">
+                                    <i class="bi bi-info-circle-fill text-primary flex-shrink-0 fs-5" aria-hidden="true"></i>
+                                    <span>Como es su primera consulta, por favor complete sus datos de contacto para registrar su turno.</span>
+                                </div>
+
+                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                    <i class="bi bi-person-lines-fill text-primary me-2"></i>Datos Personales del Paciente
+                                </h6>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   id="bookingPatientName" 
+                                                   placeholder="Nombre y Apellido"
+                                                   oninput="window.patientModule.handleContactInputLive(this, 'name')">
+                                            <label for="bookingPatientName"><i class="bi bi-person me-1 text-primary"></i>Nombre y Apellido *</label>
+                                        </div>
+                                        <div id="error-bookingPatientName" class="invalid-feedback fw-semibold d-none">
+                                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Ingrese su nombre y apellido completo.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="email" 
+                                                   class="form-control" 
+                                                   id="bookingPatientEmail" 
+                                                   placeholder="correo@ejemplo.com"
+                                                   oninput="window.patientModule.handleContactInputLive(this, 'email')">
+                                            <label for="bookingPatientEmail"><i class="bi bi-envelope me-1 text-primary"></i>Correo Electrónico *</label>
+                                        </div>
+                                        <div id="error-bookingPatientEmail" class="invalid-feedback fw-semibold d-none">
+                                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Ingrese un correo electrónico válido.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-floating">
+                                            <input type="tel" 
+                                                   class="form-control" 
+                                                   id="bookingPatientPhone" 
+                                                   placeholder="11 2345-6789"
+                                                   oninput="window.patientModule.handleContactInputLive(this, 'phone')">
+                                            <label for="bookingPatientPhone"><i class="bi bi-whatsapp me-1 text-success"></i>Teléfono Móvil / WhatsApp *</label>
+                                        </div>
+                                        <div id="error-bookingPatientPhone" class="invalid-feedback fw-semibold d-none">
+                                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Ingrese su número de teléfono o WhatsApp para recibir recordatorios.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción Paso 2 -->
+                            <div class="mt-4 pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-3">
+                                <button type="button" 
+                                        class="btn btn-outline-secondary btn-lg px-4 py-3" 
+                                        onclick="window.patientModule.backToStep1()">
+                                    <i class="bi bi-arrow-left me-2"></i>Volver al Paso 1
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow flex-grow-1" 
+                                        id="btnConfirmBooking" 
+                                        onclick="window.patientModule.handleBookingSubmit()">
+                                    <i class="bi bi-calendar2-check me-2"></i>Confirmar Turno Odontológico
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ========================================================== -->
+        <!-- SECCIÓN 2: HISTORIAL DE MIS TURNOS -->
+        <!-- ========================================================== -->
+        <section id="misturnos-tab" class="app-section d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="h3 fw-bold text-primary mb-1">Mis Turnos Odontológicos</h2>
+                    <p class="text-muted mb-0" id="myTurnosSubtitleText">Consulte el estado de sus turnos registrados.</p>
+                </div>
+                <button class="btn btn-primary fw-bold shadow-sm" id="btnMyTurnosTopNew" onclick="window.patientModule.handleTopNewTurnoClick()">
+                    <i class="bi bi-plus-circle me-1"></i> Nuevo Turno
+                </button>
+            </div>
+            <div id="myTurnosListContainer"></div>
+        </section>
+
+        <!-- ========================================================== -->
+        <!-- SECCIÓN 3: SECRETARÍA / RECEPCIÓN -->
+        <!-- ========================================================== -->
+        <section id="secretaria-tab" class="app-section d-none">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                <div>
+                    <span class="badge bg-info text-dark px-3 py-1 mb-1 fw-bold">Rol: Secretaría y Recepción</span>
+                    <h2 class="h3 fw-bold text-primary mb-1">Agenda General de Consultorios</h2>
+                    <p class="text-muted mb-0">Visualice a todos los odontólogos, acceda a sus agendas, agende nuevos turnos o cancele turnos.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success fw-bold shadow-sm" onclick="window.secretaryModule.openNewBookingModal()">
+                        <i class="bi bi-calendar-plus me-1"></i> Agendar Turno
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="window.secretaryModule.renderDailyDashboard(); window.secretaryModule.renderProfessionalsCardsGrid();">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Refrescar
+                    </button>
+                </div>
+            </div>
+
+            <!-- TARJETAS CON FOTOS DE LOS PROFESIONALES (ACCESO RÁPIDO DE SECRETARÍA) -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-bold text-primary mb-0">
+                        <i class="bi bi-person-badge-fill me-2"></i>Cuerpo Profesional Odontológico
+                    </h5>
+                    <small class="text-muted">Seleccione un profesional para filtrar su agenda o agendarle un turno:</small>
+                </div>
+                <div class="row g-3" id="secProfessionalsGrid"></div>
+            </div>
+
+            <div id="secStatsSummary"></div>
+
+            <div class="card shadow-sm border-0 mb-4" id="secAppointmentsTableCard">
+                <div class="card-header bg-white py-3">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-muted mb-1" for="secFilterProf">Filtrar por Profesional:</label>
+                            <select class="form-select form-select-sm" id="secFilterProf"></select>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="form-label small fw-semibold text-muted mb-1" for="secFilterDate">Fecha:</label>
+                            <input type="date" class="form-control form-control-sm" id="secFilterDate">
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <label class="form-label small fw-semibold text-muted mb-1" for="secFilterStatus">Estado:</label>
+                            <select class="form-select form-select-sm" id="secFilterStatus">
+                                <option value="all">Todos</option>
+                                <option value="confirmado">Confirmados</option>
+                                <option value="pendiente">Pendientes</option>
+                                <option value="atendido">Atendidos</option>
+                                <option value="cancelado">Cancelados</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label small fw-semibold text-muted mb-1" for="secSearchPatient">Buscar Paciente:</label>
+                            <input type="text" class="form-control form-control-sm" id="secSearchPatient" placeholder="Nombre, email o teléfono...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Horario & Fecha</th>
+                                    <th>Profesional</th>
+                                    <th>Paciente</th>
+                                    <th>Motivo de Consulta</th>
+                                    <th>Estado</th>
+                                    <th class="text-end">Acciones & WhatsApp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="secAppointmentsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================== -->
+        <!-- SECCIÓN 4: PANEL PROFESIONAL (ODONTÓLOGOS/AS) -->
+        <!-- ========================================================== -->
+        <section id="profesional-tab" class="app-section d-none">
+            <!-- TARJETA CABECERA DEL PROFESIONAL CON PERFIL Y DETALLES CLÍNICOS -->
+            <div class="card border-0 shadow-sm mb-4 bg-white overflow-hidden border-top border-4 border-primary">
+                <div class="card-body p-3 p-md-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <img id="profPanelDoctorAvatar" src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300" 
+                                 class="rounded-circle border border-3 border-primary shadow-sm object-fit-cover" 
+                                 width="76" height="76" alt="Foto del Profesional">
+                            <div>
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                                    <h3 class="fw-bold text-primary mb-0 fs-4" id="profPanelCurrentDoctorName">Dr/a. Odontólogo/a</h3>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" id="profPanelConsultorioBadge">Consultorio</span>
+                                </div>
+                                <div class="text-secondary fw-semibold small" id="profPanelSpecialtyText">Especialidad Odontológica</div>
+                                <div class="small text-muted mt-1 d-flex flex-wrap align-items-center gap-3">
+                                    <span><i class="bi bi-clock-history me-1 text-primary"></i>Turnos de: <strong id="profPanelDurationText">30 min</strong></span>
+                                    <span><i class="bi bi-envelope me-1 text-primary"></i><span id="profPanelEmailText">doctor@dental.com</span></span>
+                                    <span id="profPanelPhoneContainer"><i class="bi bi-whatsapp me-1 text-success"></i><span id="profPanelPhoneText">11 4455-6677</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Acciones del Profesional y Modo Supervisor -->
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold shadow-sm d-flex align-items-center gap-1" id="btnEditProfProfile" onclick="window.professionalModule.openEditProfileModal()">
+                                <i class="bi bi-pencil-square"></i>
+                                <span>Editar datos</span>
+                            </button>
+
+                            <!-- Selector de Odontólogo: EXCLUSIVO PARA SECRETARÍA Y ADMINISTRADOR -->
+                            <div class="d-flex align-items-center gap-2 d-none" id="profDoctorSelectorContainer">
+                                <div class="text-end d-none d-lg-block">
+                                    <span class="badge bg-warning-subtle text-dark border border-warning-subtle small d-block">
+                                        <i class="bi bi-eye me-1"></i>Modo Supervisor
+                                    </span>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Cambiar Odontólogo</small>
+                                </div>
+                                <select class="form-select form-select-sm" id="profDoctorSelector" onchange="window.professionalModule.setProfessional(this.value)"></select>
+                                <button class="btn btn-outline-primary btn-sm text-nowrap" onclick="window.professionalModule.renderAppointmentsList()" title="Actualizar Turnos">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPIs del Profesional -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm bg-white p-3 border-start border-4 border-primary">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small text-uppercase fw-bold">Total Turnos</div>
+                                <h3 class="mb-0 fw-bold text-primary" id="statProfTotal">0</h3>
+                            </div>
+                            <i class="bi bi-calendar2-range text-primary fs-2 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm bg-white p-3 border-start border-4 border-info">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small text-uppercase fw-bold">Turnos de Hoy</div>
+                                <h3 class="mb-0 fw-bold text-info" id="statProfToday">0</h3>
+                            </div>
+                            <i class="bi bi-calendar-day text-info fs-2 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm bg-white p-3 border-start border-4 border-danger">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small text-uppercase fw-bold">Cancelados</div>
+                                <h3 class="mb-0 fw-bold text-danger" id="statProfCanceled">0</h3>
+                            </div>
+                            <i class="bi bi-calendar-x text-danger fs-2 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm bg-white p-3 border-start border-4 border-success">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small text-uppercase fw-bold">Atendidos</div>
+                                <h3 class="mb-0 fw-bold text-success" id="statProfAttended">0</h3>
+                            </div>
+                            <i class="bi bi-clipboard2-check text-success fs-2 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestañas internas del Profesional -->
+            <ul class="nav nav-tabs mb-4" id="profSubTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-semibold" id="prof-agenda-subtab" data-bs-toggle="tab" data-bs-target="#profAgendaPane" type="button" role="tab">
+                        <i class="bi bi-calendar3 me-1"></i> Mi Agenda de Turnos
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold" id="prof-reasons-subtab" data-bs-toggle="tab" data-bs-target="#profReasonsPane" type="button" role="tab">
+                        <i class="bi bi-journal-check me-1"></i> Mis Motivos y Tiempo de Turno
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold" id="prof-schedule-subtab" data-bs-toggle="tab" data-bs-target="#profSchedulePane" type="button" role="tab">
+                        <i class="bi bi-sliders me-1"></i> Mis Horarios Fijos Semanales
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="profSubTabsContent">
+                <!-- PESTAÑA: AGENDA DE TURNOS DEL PROFESIONAL -->
+                <div class="tab-pane fade show active" id="profAgendaPane" role="tabpanel">
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-white py-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-md-4">
+                                    <div class="btn-group w-100" role="group">
+                                        <button type="button" class="btn btn-primary btn-sm" id="btnFilter_all" onclick="window.professionalModule.setFilterPeriod('all')">Todos los Turnos</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="btnFilter_today" onclick="window.professionalModule.setFilterPeriod('today')">Hoy</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="btnFilter_week" onclick="window.professionalModule.setFilterPeriod('week')">Esta Semana</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="date" class="form-control form-control-sm" id="profFilterDate">
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select form-select-sm" id="profFilterStatus">
+                                        <option value="all">Todos los estados</option>
+                                        <option value="confirmado">Confirmados</option>
+                                        <option value="cancelado">Cancelados</option>
+                                        <option value="atendido">Atendidos</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0" id="profAppointmentsContainer"></div>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA: MOTIVOS Y DURACIÓN DEL TURNO (15, 30, 45, 60 MIN) -->
+                <div class="tab-pane fade" id="profReasonsPane" role="tabpanel">
+                    <div class="row g-4">
+                        <!-- Duración del turno -->
+                        <div class="col-lg-5">
+                            <div class="card shadow-sm border-0 mb-4">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="card-title mb-0 fw-bold text-primary">
+                                        <i class="bi bi-clock me-1"></i> Duración de Turno por Paciente
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="small text-muted">
+                                        Elija la duración predeterminada de cada turno de atención. El calendario calculará automáticamente los bloques disponibles:
+                                    </p>
+                                    <div class="mb-3">
+                                        <select class="form-select form-select-lg fw-bold" id="profConfigDurationSelect">
+                                            <option value="15">⏱️ 15 Minutos por Turno</option>
+                                            <option value="30">⏱️ 30 Minutos por Turno</option>
+                                            <option value="45">⏱️ 45 Minutos por Turno</option>
+                                            <option value="60">⏱️ 60 Minutos (1 Hora) por Turno</option>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-primary w-100 fw-bold" id="btnSaveReasonsAndDuration">
+                                        <i class="bi bi-check2-circle me-1"></i> Guardar Tiempo de Turno
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Motivos de Consulta Personalizados -->
+                        <div class="col-lg-7">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="card-title mb-0 fw-bold text-primary">
+                                        <i class="bi bi-list-check me-1"></i> Mis Motivos de Consulta para Pacientes
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="small text-muted mb-3">
+                                        Agregue o elimine los motivos de consulta que los pacientes podrán seleccionar al reservar un turno con usted:
+                                    </p>
+
+                                    <!-- Formulario para agregar motivo -->
+                                    <form id="formAddCustomReason" class="mb-3">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="newReasonInput" placeholder="Ej. Ajuste de brackets, Blanqueamiento..." required>
+                                            <button class="btn btn-success fw-bold" type="submit">
+                                                <i class="bi bi-plus-lg me-1"></i> Agregar Motivo
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <!-- Lista de motivos actuales -->
+                                    <div id="profReasonsListContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA: CONFIGURACIÓN DE HORARIOS SEMANALES -->
+                <div class="tab-pane fade" id="profSchedulePane" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-lg-8">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="card-title mb-0 fw-bold text-primary">
+                                        <i class="bi bi-clock-history me-2"></i>Mis Días y Franjas de Atención Semanal
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info py-2 small mb-4">
+                                        <i class="bi bi-lightbulb me-1"></i> Configure los días que atiende en la semana. Puede habilitar 1 o 2 franjas horarias por día (Mañana y Tarde).
+                                    </div>
+
+                                    <form id="formWeeklySchedule">
+                                        <div id="weeklyScheduleContainer"></div>
+                                        <div class="text-end mt-4">
+                                            <button type="submit" class="btn btn-success btn-lg px-4 fw-bold">
+                                                <i class="bi bi-save me-1"></i> Guardar Mis Horarios Fijos
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna Vacaciones / Feriados del Profesional -->
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm border-0 mb-4">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="card-title mb-0 fw-bold text-danger">
+                                        <i class="bi bi-calendar-x me-2"></i>Mis Días No Laborales / Vacaciones
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small">Bloquee fechas en las que no atenderá turnos.</p>
+                                    
+                                    <form id="formAddBlockedDate" class="mb-3">
+                                        <div class="mb-2">
+                                            <label for="blockedDateInput" class="form-label small fw-semibold">Fecha:</label>
+                                            <input type="date" class="form-control form-control-sm" id="blockedDateInput" required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="blockedReasonInput" class="form-label small fw-semibold">Motivo:</label>
+                                            <input type="text" class="form-control form-control-sm" id="blockedReasonInput" placeholder="Ej. Congreso, Vacaciones...">
+                                        </div>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                            <i class="bi bi-plus-circle me-1"></i> Bloquear Fecha
+                                        </button>
+                                    </form>
+
+                                    <h6 class="fw-bold small border-bottom pb-2">Fechas Bloqueadas:</h6>
+                                    <div id="blockedDatesList"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================== -->
+        <!-- SECCIÓN 5: ADMINISTRACIÓN (ADMINISTRADOR ÚNICO) -->
+        <!-- ========================================================== -->
+        <section id="admin-tab" class="app-section d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <span class="badge bg-danger px-3 py-1 mb-1 fw-bold">Acceso Exclusivo Administrador</span>
+                    <h2 class="h3 fw-bold text-primary mb-1">Panel de Administración General</h2>
+                    <p class="text-muted mb-0">Solo el admin puede dar de alta/baja profesionales y definir los roles del centro.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-success" onclick="window.adminModule.exportAppointmentsCSV()">
+                        <i class="bi bi-file-earmark-excel me-1"></i> Exportar CSV
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="window.adminModule.resetDatabase()">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Restaurar Datos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Métricas Generales -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm p-3 bg-white">
+                        <span class="text-muted small fw-bold text-uppercase">Total Turnos</span>
+                        <h2 class="fw-bold text-primary mb-0" id="adminStatTotalTurnos">0</h2>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm p-3 bg-white">
+                        <span class="text-muted small fw-bold text-uppercase">Odontólogos</span>
+                        <h2 class="fw-bold text-info mb-0" id="adminStatProfesionales">5</h2>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm p-3 bg-white">
+                        <span class="text-muted small fw-bold text-uppercase">Pacientes</span>
+                        <h2 class="fw-bold text-success mb-0" id="adminStatPacientes">0</h2>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm p-3 bg-white">
+                        <span class="text-muted small fw-bold text-uppercase">Atenciones</span>
+                        <h2 class="fw-bold text-secondary mb-0" id="adminStatAtendidos">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestañas de Admin -->
+            <ul class="nav nav-pills mb-3 gap-2" id="adminSubTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#adminProfsPane">
+                        <i class="bi bi-hospital me-1"></i> Profesionales del Centro
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#adminUsersPane">
+                        <i class="bi bi-people me-1"></i> Usuarios y Asignación de Roles
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#adminApptsPane">
+                        <i class="bi bi-calendar3 me-1"></i> Gestión Global de Turnos
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#adminAuditLogsPane">
+                        <i class="bi bi-shield-lock-fill text-danger me-1"></i> Log de Auditoría Exclusivo
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#adminSettingsPane">
+                        <i class="bi bi-gear me-1"></i> Configuración Clínica & Google
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- TAB: GESTIÓN DE PROFESIONALES (ALTA Y BAJA SOLO ADMIN) -->
+                <div class="tab-pane fade show active" id="adminProfsPane">
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-0 fw-bold text-primary">Cuerpo Profesional Odontológico</h5>
+                                <small class="text-muted">Solo el administrador puede incorporar o dar de baja a los odontólogos del centro.</small>
+                            </div>
+                            <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalAddProfessional">
+                                <i class="bi bi-person-plus me-1"></i> Incorporar Nuevo Profesional
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" id="adminProfessionalsList"></div>
+                        </div>
+                    </div>
+
+                    <!-- CARD: ESPECIALIDADES ODONTOLÓGICAS (GESTIONADAS POR EL ADMIN) -->
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-0 fw-bold text-primary">
+                                    <i class="bi bi-award me-1"></i> Especialidades Odontológicas del Centro
+                                </h5>
+                                <small class="text-muted">Especialidades que los profesionales pueden seleccionar al editar sus datos clínicos.</small>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form id="formAdminAddSpecialty" class="row g-2 mb-3" onsubmit="event.preventDefault(); window.adminModule.handleAddSpecialty();">
+                                <div class="col-md-8 col-sm-7">
+                                    <input type="text" class="form-control form-control-sm" id="adminNewSpecialtyInput" placeholder="Ej. Odontología Estética, Implantología Avanzada..." required>
+                                </div>
+                                <div class="col-md-4 col-sm-5">
+                                    <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">
+                                        <i class="bi bi-plus-circle me-1"></i> Agregar Especialidad
+                                    </button>
+                                </div>
+                            </form>
+                            <div id="adminSpecialtiesListContainer" class="d-flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: USUARIOS Y ROLES (SOLO ADMIN PUEDE CREAR SECRETARIA Y CAMBIAR ROLES) -->
+                <div class="tab-pane fade" id="adminUsersPane">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <h5 class="card-title mb-0 fw-bold text-primary">Gestión de Usuarios y Roles</h5>
+                                <small class="text-muted">Asigne roles de Secretaría, Profesional o Paciente.</small>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-info text-dark btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalAddSecretary">
+                                    <i class="bi bi-person-badge me-1"></i> + Crear Personal Secretaría
+                                </button>
+                                <input type="text" class="form-control form-control-sm w-auto" id="adminSearchUsers" placeholder="Buscar usuario...">
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Teléfono</th>
+                                            <th>Rol Actual</th>
+                                            <th>Modificar Rol</th>
+                                            <th class="text-end">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminUsersTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: TODOS LOS TURNOS -->
+                <div class="tab-pane fade" id="adminApptsPane">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0 fw-bold text-primary">Auditoría Global de Turnos</h5>
+                            <input type="text" class="form-control form-control-sm w-auto" id="adminSearchAppointments" placeholder="Buscar por paciente o médico...">
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Fecha & Hora</th>
+                                            <th>Profesional</th>
+                                            <th>Paciente</th>
+                                            <th>Motivo</th>
+                                            <th>Estado</th>
+                                            <th>Modificar</th>
+                                            <th class="text-end">Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminAppointmentsTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: CONFIGURACIÓN GENERAL & GOOGLE -->
+                <div class="tab-pane fade" id="adminSettingsPane">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0 fw-bold text-primary">
+                                <i class="bi bi-sliders me-1"></i> Configuración del Centro y Google Identity Services
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="formClinicSettings">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="settingClinicName" class="form-label fw-semibold">Nombre del Centro Odontológico</label>
+                                        <input type="text" class="form-control" id="settingClinicName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="settingPhone" class="form-label fw-semibold">Teléfono / WhatsApp de Recepción</label>
+                                        <input type="text" class="form-control" id="settingPhone">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="settingAddress" class="form-label fw-semibold">Dirección de Consultorios</label>
+                                        <input type="text" class="form-control" id="settingAddress">
+                                    </div>
+
+                                    <div class="col-12 mt-4 pt-3 border-top">
+                                        <h6 class="fw-bold text-primary d-flex align-items-center gap-2">
+                                            <i class="bi bi-google"></i> Integración Oficial con Google Sign-In (OAuth 2.0)
+                                        </h6>
+                                        <p class="text-muted small mb-2">
+                                            Ingrese su <strong>Client ID</strong> de Google Cloud para activar el inicio de sesión oficial con cuentas @gmail.com.
+                                        </p>
+                                        <div class="mb-3">
+                                            <label for="settingGoogleClientId" class="form-label fw-semibold">Google Client ID:</label>
+                                            <input type="text" class="form-control" id="settingGoogleClientId" placeholder="ej. 1234567890-abcdefg.apps.googleusercontent.com">
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="settingAutoConfirm" checked>
+                                            <label class="form-check-label fw-semibold" for="settingAutoConfirm">Confirmar turnos automáticamente al reservar</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 text-end mt-4">
+                                        <button type="submit" class="btn btn-primary px-4 fw-bold">
+                                            <i class="bi bi-check2-circle me-1"></i> Guardar Cambios
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: LOG DE AUDITORÍA EXCLUSIVO PARA ADMINISTRADOR -->
+                <div class="tab-pane fade" id="adminAuditLogsPane">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                <div>
+                                    <span class="badge bg-danger text-white fw-bold px-2 py-1 mb-1">
+                                        <i class="bi bi-shield-lock me-1"></i>Acceso Exclusivo Administrador
+                                    </span>
+                                    <h5 class="card-title mb-0 fw-bold text-primary">
+                                        <i class="bi bi-journal-text me-1"></i> Registro Cronológico de Auditoría y Actividad
+                                    </h5>
+                                    <small class="text-muted">Registro de turnos agendados por pacientes o secretaría, cancelaciones y cambios del sistema.</small>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-light text-dark border px-3 py-2 fw-semibold" id="adminAuditLogsCount">0 eventos</span>
+                                    <button class="btn btn-outline-danger btn-sm fw-bold" onclick="window.adminModule.clearAuditLogs()" title="Vaciar logs de auditoría">
+                                        <i class="bi bi-trash me-1"></i> Vaciar Historial
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 align-items-center mt-2 pt-2 border-top">
+                                <div class="col-12 col-md-4">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                                        <input type="text" class="form-control" id="adminSearchAuditLogs" placeholder="Buscar por paciente, médico o texto...">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <select class="form-select form-select-sm" id="adminFilterAuditAction">
+                                        <option value="all">Todas las acciones registradas</option>
+                                        <option value="turnos_creados">Turnos Nuevos (Creados)</option>
+                                        <option value="turnos_cancelados">Turnos Cancelados / Eliminados</option>
+                                        <option value="secretaria">Acciones de Secretaría</option>
+                                        <option value="paciente">Acciones de Pacientes</option>
+                                        <option value="profesionales">Movimientos de Profesionales</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-4 text-md-end">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="window.adminModule.renderAuditLogs()">
+                                        <i class="bi bi-arrow-clockwise me-1"></i> Refrescar Log
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 170px;">Fecha y Hora</th>
+                                            <th style="width: 190px;">Acción / Evento</th>
+                                            <th style="width: 200px;">Responsable (Rol)</th>
+                                            <th>Detalle del Movimiento</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminAuditLogsTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================================== -->
+    <!-- BARRA INFERIOR MÓVIL (MOBILE BOTTOM NAVIGATION BAR) -->
+    <!-- ========================================================== -->
+    <nav class="mobile-bottom-bar" aria-label="Navegación móvil inferior">
+        <a href="#" class="mobile-bottom-item active" id="mobileNavReserva" data-tab="reserva-tab">
+            <i class="bi bi-calendar-plus-fill" aria-hidden="true"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="mobile-bottom-item" id="mobileNavMisTurnos" data-tab="misturnos-tab" onclick="window.app.switchTab('misturnos-tab'); return false;">
+            <span class="position-relative d-inline-flex align-items-center justify-content-center">
+                <i class="bi bi-calendar2-check-fill" aria-hidden="true"></i>
+                <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle d-none" id="mobileBadgeMyTurnosCount" style="font-size: 0.65rem; padding: 0.2em 0.45em;">0</span>
+            </span>
+            <span>Mis Turnos</span>
+        </a>
+        <a href="#" class="mobile-bottom-item d-none" id="mobileNavSecretary" data-tab="secretaria-tab">
+            <i class="bi bi-inboxes-fill" aria-hidden="true"></i>
+            <span>Secretaría</span>
+        </a>
+        <a href="#" class="mobile-bottom-item d-none" id="mobileNavProf" data-tab="profesional-tab">
+            <i class="bi bi-person-badge-fill" aria-hidden="true"></i>
+            <span>Agenda</span>
+        </a>
+        <a href="#" class="mobile-bottom-item d-none" id="mobileNavAdmin" data-tab="admin-tab">
+            <i class="bi bi-shield-lock-fill" aria-hidden="true"></i>
+            <span>Admin</span>
+        </a>
+        <a href="#" class="mobile-bottom-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAccessibility">
+            <i class="bi bi-universal-access" aria-hidden="true"></i>
+            <span>Accesible</span>
+        </a>
+    </nav>
+
+    <!-- BOTÓN FLOTANTE ACCESIBILIDAD UNIVERSAL (Oculto en móvil para liberar el área táctil inferior) -->
+    <button class="floating-a11y-btn d-none d-lg-flex" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAccessibility" aria-label="Abrir panel de accesibilidad (Alt+A)" title="Accesibilidad">
+        <i class="bi bi-universal-access" aria-hidden="true"></i>
+    </button>
+
+    <!-- ========================================================== -->
+    <!-- OFFCANVAS: PANEL DE ACCESIBILIDAD (A11Y) -->
+    <!-- ========================================================== -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAccessibility" aria-labelledby="offcanvasA11yLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold text-primary d-flex align-items-center gap-2" id="offcanvasA11yLabel">
+                <i class="bi bi-universal-access fs-4 text-primary"></i>
+                Accesibilidad Universal
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar opciones"></button>
+        </div>
+        <div class="offcanvas-body">
+            <p class="small text-muted mb-4">
+                Personalice la experiencia visual y auditiva del centro odontológico para daltonismo, discapacidad visual o dislexia.
+            </p>
+
+            <!-- 1. ASISTENTE DE VOZ (TEXT-TO-SPEECH) -->
+            <div class="card p-3 mb-3 border-0 bg-light rounded-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold"><i class="bi bi-volume-up text-primary me-2"></i>Lector de Voz / Ciegos</span>
+                    <span class="badge bg-secondary" id="voiceAssistantStatusBadge">Desactivado</span>
+                </div>
+                <p class="small text-muted mb-2">Lee en voz alta las secciones y horarios mediante síntesis de voz.</p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary w-100 fw-semibold" id="btnToggleVoiceAssistant" onclick="window.accessibilityModule.toggleScreenReader()">
+                        <i class="bi bi-megaphone me-1"></i> Activar / Desactivar
+                    </button>
+                    <button class="btn btn-sm btn-light border" title="Leer pantalla actual" onclick="window.accessibilityModule.readCurrentSectionSummary()">
+                        <i class="bi bi-play-circle"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. DALTONISMO & ALTO CONTRASTE -->
+            <div class="card p-3 mb-3 border-0 bg-light rounded-3">
+                <label for="selectColorTheme" class="form-label fw-bold mb-1">
+                    <i class="bi bi-palette text-primary me-2"></i>Modo Visual / Daltonismo
+                </label>
+                <select class="form-select form-select-sm mb-2" id="selectColorTheme" onchange="window.accessibilityModule.setColorFilter(this.value)">
+                    <option value="normal">Color Estándar Clínico</option>
+                    <option value="high-contrast">Alto Contraste WCAG AAA (Fondo oscuro)</option>
+                    <option value="protanopia">Daltonismo Rojo-Verde (Protanopía / Deuteranopía)</option>
+                    <option value="monochrome">Escala de Grises / Monocromático</option>
+                </select>
+                <small class="text-muted d-block" style="font-size: 0.76rem;">Todos los estados disponen de texto explícito entre corchetes además del color.</small>
+            </div>
+
+            <!-- 3. TAMAÑO DE TEXTO (ZOOM) -->
+            <div class="card p-3 mb-3 border-0 bg-light rounded-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold"><i class="bi bi-fonts text-primary me-2"></i>Tamaño del Texto</span>
+                    <span class="badge bg-light text-dark border fw-bold" id="fontSizeDisplay">100%</span>
+                </div>
+                <div class="btn-group w-100" role="group" aria-label="Control de tamaño de tipografía">
+                    <button type="button" class="btn btn-outline-secondary" onclick="window.accessibilityModule.decreaseFontSize()">A-</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="window.accessibilityModule.resetFontSize()">100%</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="window.accessibilityModule.increaseFontSize()">A+</button>
+                </div>
+            </div>
+
+            <!-- 4. TIPOGRAFÍA PARA DISLEXIA -->
+            <div class="card p-3 mb-3 border-0 bg-light rounded-3">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chkDyslexicFont" onchange="window.accessibilityModule.setDyslexicFont(this.checked)">
+                    <label class="form-check-label fw-bold" for="chkDyslexicFont">
+                        Tipografía de Alta Legibilidad (Dislexia)
+                    </label>
+                </div>
+            </div>
+
+            <!-- ATAJOS DE TECLADO -->
+            <div class="small text-muted p-2 border rounded">
+                <strong>Atajos de Teclado:</strong>
+                <ul class="mb-0 ps-3 mt-1">
+                    <li><kbd>Alt + A</kbd>: Abrir este panel</li>
+                    <li><kbd>Alt + V</kbd>: Activar/Desactivar Voz</li>
+                    <li><kbd>Alt + L</kbd>: Leer sección en voz alta</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: CREAR PERSONAL DE SECRETARÍA (SOLO ADMIN) -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalAddSecretary" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-primary"><i class="bi bi-person-plus me-2"></i>Crear Personal de Secretaría / Recepción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form onsubmit="
+                    event.preventDefault();
+                    const n = document.getElementById('newSecName').value;
+                    const e = document.getElementById('newSecEmail').value;
+                    const rawP = document.getElementById('newSecPhone').value;
+                    const p = window.stripCountryCode ? window.stripCountryCode(rawP) : rawP;
+                    window.adminModule.createSecretaryUser(n, e, p);
+                    bootstrap.Modal.getInstance(document.getElementById('modalAddSecretary')).hide();
+                ">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="newSecName" class="form-label small fw-semibold">Nombre y Apellido:</label>
+                            <input type="text" class="form-control" id="newSecName" placeholder="Ej. Florencia Rivas" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newSecEmail" class="form-label small fw-semibold">Correo Electrónico:</label>
+                            <input type="email" class="form-control" id="newSecEmail" placeholder="florencia.secretaria@clinica.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newSecPhone" class="form-label small fw-semibold">Teléfono de Contacto:</label>
+                            <input type="tel" class="form-control" id="newSecPhone" placeholder="Ej. 11 9988-7766">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-info text-dark fw-bold">Crear Secretaría</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: NUEVO PROFESIONAL (SOLO ADMIN) -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalAddProfessional" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-primary"><i class="bi bi-person-plus me-2"></i>Incorporar Nuevo Odontólogo/a</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form id="formAddProfessional">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="newProfName" class="form-label small fw-semibold">Nombre y Apellido:</label>
+                            <input type="text" class="form-control" id="newProfName" placeholder="Ej. Dr. Carlos Fernández" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newProfSpecialty" class="form-label small fw-semibold">Especialidad:</label>
+                            <input type="text" class="form-control" id="newProfSpecialty" placeholder="Ej. Periodoncia y Cirugía" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newProfEmail" class="form-label small fw-semibold">Correo Electrónico:</label>
+                            <input type="email" class="form-control" id="newProfEmail" placeholder="dr.fernandez@dental.com" required>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label for="newProfConsultorio" class="form-label small fw-semibold">Consultorio / Box:</label>
+                                <input type="text" class="form-control" id="newProfConsultorio" placeholder="Consultorio F">
+                            </div>
+                            <div class="col-6">
+                                <label for="newProfDuration" class="form-label small fw-semibold">Duración de Turno:</label>
+                                <select class="form-select" id="newProfDuration">
+                                    <option value="15">15 min</option>
+                                    <option value="30" selected>30 min</option>
+                                    <option value="45">45 min</option>
+                                    <option value="60">60 min</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Guardar Profesional</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: INICIO DE SESIÓN CON GOOGLE -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center px-4 pt-0 pb-4">
+                    <div class="brand-icon mx-auto mb-3" style="width: 52px; height: 52px; font-size: 1.6rem;">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1" id="loginModalLabel">Ingreso al Centro Odontológico</h4>
+                    <p class="text-muted small mb-4">Acceda con Google para reservar y gestionar sus turnos.</p>
+
+                    <div id="googleSignInBtnContainer" class="mb-3"></div>
+
+                    <div class="d-flex align-items-center my-3">
+                        <hr class="flex-grow-1">
+                        <span class="px-2 text-muted small">ACCESOS RÁPIDOS POR ROL</span>
+                        <hr class="flex-grow-1">
+                    </div>
+
+                    <div class="d-grid gap-2 text-start">
+                        <button class="btn btn-outline-info text-dark d-flex align-items-center justify-content-between px-3" onclick="window.authService.loginAs('secretaria')">
+                            <span><i class="bi bi-clipboard2-pulse me-2"></i>Ana López</span>
+                            <span class="badge bg-info text-dark">Secretaría</span>
+                        </button>
+                        <button class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3" onclick="window.authService.loginAs('profesional')">
+                            <span><i class="bi bi-person-badge me-2"></i>Dra. María Elena Gómez</span>
+                            <span class="badge bg-primary">Ortodoncia</span>
+                        </button>
+                        <button class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3" onclick="window.authService.loginAs('profesional_2')">
+                            <span><i class="bi bi-person-badge me-2"></i>Dr. Javier Morales</span>
+                            <span class="badge bg-primary">Implantes</span>
+                        </button>
+                        <button class="btn btn-outline-danger d-flex align-items-center justify-content-between px-3" onclick="window.authService.loginAs('admin')">
+                            <span><i class="bi bi-shield-lock me-2"></i>Martín Bossi</span>
+                            <span class="badge bg-danger">Admin</span>
+                        </button>
+                        <button class="btn btn-outline-success d-flex align-items-center justify-content-between px-3" onclick="window.authService.loginAs('paciente')">
+                            <span><i class="bi bi-person me-2"></i>Lucas Martínez</span>
+                            <span class="badge bg-success">Paciente</span>
+                        </button>
+                        <button class="btn btn-outline-secondary d-flex align-items-center justify-content-between px-3" onclick="window.authService.loginAs('invitado')">
+                            <span><i class="bi bi-person-x me-2"></i>Usuario Sin Cuenta Registrada</span>
+                            <span class="badge bg-secondary">Sin Cuenta</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: DEMO SIMULADOR GOOGLE -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="demoLoginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-primary"><i class="bi bi-google me-2"></i>Simulador de Cuenta Google</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small">
+                        Ingrese cualquier nombre y correo electrónico simulando el acceso de Google.
+                    </p>
+                    <div class="mb-3">
+                        <label for="customLoginName" class="form-label small fw-semibold">Nombre Completo:</label>
+                        <input type="text" class="form-control" id="customLoginName" placeholder="Ej. Mariana López">
+                    </div>
+                    <div class="mb-3">
+                        <label for="customLoginEmail" class="form-label small fw-semibold">Correo de Google (Gmail):</label>
+                        <input type="email" class="form-control" id="customLoginEmail" placeholder="mariana.lopez@gmail.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="customLoginPhone" class="form-label small fw-semibold">Teléfono / WhatsApp:</label>
+                        <input type="tel" class="form-control" id="customLoginPhone" placeholder="Ej. 11 8899-0011">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary fw-bold" onclick="
+                        const n = document.getElementById('customLoginName').value;
+                        const e = document.getElementById('customLoginEmail').value;
+                        const rawP = document.getElementById('customLoginPhone').value;
+                        const p = window.stripCountryCode ? window.stripCountryCode(rawP) : rawP;
+                        window.authService.loginWithCustomPatient(n, e, p);
+                    ">
+                        Ingresar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: CONFIRMACIÓN EXITOSA DE TURNO -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="bookingSuccessModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow text-center p-4 position-relative">
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <div class="mb-3 d-flex justify-content-center">
+                    <div class="smile-sparkle-box">
+                        <div class="smile-sparkle-icon" id="successModalSparkleIcon">
+                            <i class="bi bi-check-lg"></i>
+                        </div>
+                        <div class="smile-sparkle-stars" aria-hidden="true">
+                            <span class="sparkle-star sparkle-star-1">✦</span>
+                            <span class="sparkle-star sparkle-star-2">★</span>
+                            <span class="sparkle-star sparkle-star-3">✦</span>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-1">¡Turno Reservado con Éxito!</h4>
+                <p class="text-muted small mb-3">Su turno odontológico ha sido agendado en el centro.</p>
+
+                <div class="card bg-light border-0 p-3 mb-3 text-start small">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Fecha:</span>
+                        <strong id="successModalDate">-</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Horario:</span>
+                        <strong id="successModalTime" class="text-primary">-</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Profesional:</span>
+                        <strong id="successModalProfessional">-</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Motivo:</span>
+                        <strong id="successModalReason">-</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Consultorio:</span>
+                        <span id="successModalAddress">-</span>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Dinámica de Consejos e Indicaciones Pre-Consulta -->
+                <div id="successModalAdviceContainer" class="card border-0 bg-primary bg-opacity-10 p-3 mb-3 text-start border-start border-4 border-primary">
+                    <div class="d-flex align-items-center gap-2 mb-1 text-primary fw-bold small">
+                        <i class="bi bi-shield-check fs-6 text-primary"></i>
+                        <span id="successModalAdviceTitle">Indicaciones previas a su consulta:</span>
+                    </div>
+                    <p id="successModalAdviceText" class="mb-0 small text-dark"></p>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <!-- Botón de Google Calendar -->
+                    <a href="#" id="btnAddToGoogleCalendar" target="_blank" class="btn btn-outline-primary btn-sm w-100 py-2 d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                        <i class="bi bi-google"></i>
+                        <span class="fw-semibold">Añadir a Google Calendar</span>
+                    </a>
+
+                    <!-- Botón para Guardar / Reenviar Comprobante por WhatsApp -->
+                    <a href="#" id="btnShareWhatsAppReceipt" target="_blank" class="btn btn-outline-success btn-sm py-2 d-flex align-items-center justify-content-center gap-2 fw-semibold shadow-sm">
+                        <i class="bi bi-whatsapp fs-6"></i>
+                        <span>Guardar o Enviar Comprobante por WhatsApp</span>
+                    </a>
+
+                    <!-- Botón de Navegación a Mis Turnos -->
+                    <button type="button" class="btn btn-primary py-2 fw-bold shadow-sm" data-bs-dismiss="modal" onclick="window.app.switchTab('misturnos-tab')">
+                        <i class="bi bi-calendar2-check me-1"></i> Ver Mis Turnos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: AGENDAR NUEVO TURNO DESDE SECRETARÍA -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalSecretaryNewBooking" tabindex="-1" aria-labelledby="modalSecBookingTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="modalSecBookingTitle">
+                        <i class="bi bi-calendar-plus me-2"></i> Agendar Turno Odontológico (Secretaría)
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form id="formSecretaryNewBooking">
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-7">
+                                <label for="secModalBookingProf" class="form-label fw-bold">Profesional Odontólogo/a <span class="text-danger">*</span></label>
+                                <select class="form-select" id="secModalBookingProf" required></select>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="secModalBookingReason" class="form-label fw-bold">Motivo de Consulta <span class="text-danger">*</span></label>
+                                <select class="form-select" id="secModalBookingReason" required></select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="secModalBookingDate" class="form-label fw-bold">Fecha del Turno <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="secModalBookingDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="secModalBookingTime" class="form-label fw-bold mb-0">Horario Disponible <span class="text-danger">*</span></label>
+                                    <span class="badge bg-primary-subtle text-primary small" id="secModalBookingDurationBadge">Turnos de 30 min</span>
+                                </div>
+                                <select class="form-select" id="secModalBookingTime" required>
+                                    <option value="" disabled selected>Cargando horarios...</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12"><hr class="my-2"></div>
+                            <div class="col-12"><h6 class="fw-bold text-primary mb-1"><i class="bi bi-person-fill me-1"></i>Datos del Paciente</h6></div>
+
+                            <div class="col-md-6">
+                                <label for="secModalBookingPatientName" class="form-label fw-semibold">Nombre y Apellido <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="secModalBookingPatientName" placeholder="ej. María González" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="secModalBookingPatientEmail" class="form-label fw-semibold">Correo Electrónico <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="secModalBookingPatientEmail" placeholder="ej. paciente@gmail.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="secModalBookingPatientPhone" class="form-label fw-semibold">Teléfono / WhatsApp</label>
+                                <input type="tel" class="form-control" id="secModalBookingPatientPhone" placeholder="ej. 11 5566-7788">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary fw-bold px-4">
+                            <i class="bi bi-check2-circle me-1"></i> Confirmar y Agendar Turno
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: AGENDAR NUEVO TURNO PARA PROFESIONAL (ODONTÓLOGOS)  -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalProfNewBooking" tabindex="-1" aria-labelledby="modalProfNewBookingLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                <div class="modal-header bg-primary text-white py-3">
+                    <div>
+                        <h5 class="modal-title fw-bold d-flex align-items-center gap-2 mb-0" id="modalProfNewBookingLabel">
+                            <i class="bi bi-calendar-plus-fill"></i> Agendar Turno para Paciente
+                        </h5>
+                        <small class="text-white-50" id="profBookingDoctorSubtitle">Profesional a cargo</small>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formProfNewBooking" onsubmit="event.preventDefault(); window.patientModule.submitProfNewBooking();">
+                        
+                        <!-- 1. BÚSQUEDA Y FILTRADO DE PACIENTES POR NOMBRE O APELLIDO -->
+                        <div class="mb-4 p-3 bg-light rounded-3 border">
+                            <label class="form-label fw-bold text-dark d-flex align-items-center gap-2 mb-2" for="profBookingPatientSearch">
+                                <i class="bi bi-person-search text-primary"></i> 1. Buscar Paciente por Nombre o Apellido:
+                            </label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                                <input type="text" class="form-control" id="profBookingPatientSearch" 
+                                       placeholder="Escriba nombre o apellido (ej. Lucas, Martínez, Camila)..." autocomplete="off">
+                                <button class="btn btn-outline-secondary" type="button" onclick="window.patientModule.clearProfPatientSearch()">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mb-2">Seleccione el paciente deseado del listado filtrado:</small>
+                            
+                            <!-- Listado dinámico filtrado de pacientes -->
+                            <div id="profPatientSearchResults" class="list-group shadow-sm border overflow-auto" style="max-height: 200px; border-radius: 8px;"></div>
+                            
+                            <!-- Paciente seleccionado visible -->
+                            <div id="profSelectedPatientContainer" class="d-none mt-3 p-3 bg-white border border-success rounded-3 shadow-sm">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img id="profSelectedPatientAvatar" src="" class="rounded-circle border border-2 border-success shadow-sm" width="46" height="46" style="object-fit: cover;">
+                                        <div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h6 class="fw-bold mb-0 text-success" id="profSelectedPatientName"></h6>
+                                                <span class="badge bg-success text-white small">[Paciente Seleccionado]</span>
+                                            </div>
+                                            <small class="text-muted" id="profSelectedPatientDetails"></small>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="window.patientModule.deselectProfPatient()">
+                                        <i class="bi bi-x-circle me-1"></i> Cambiar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Carga manual para paciente nuevo no registrado -->
+                            <div class="mt-2 text-end">
+                                <button type="button" class="btn btn-link btn-sm text-decoration-none p-0 fw-semibold" onclick="window.patientModule.toggleNewPatientManualForm()">
+                                    <i class="bi bi-person-plus me-1"></i> ¿Paciente no registrado? Cargar nuevo paciente
+                                </button>
+                            </div>
+
+                            <div id="profManualPatientForm" class="d-none mt-3 p-3 bg-white border rounded-3">
+                                <h6 class="fw-bold text-primary mb-2 small text-uppercase">Datos del Nuevo Paciente</h6>
+                                <div class="row g-2">
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label small fw-semibold text-muted mb-1" for="manualPatientName">Nombre y Apellido *</label>
+                                        <input type="text" class="form-control form-control-sm" id="manualPatientName" placeholder="Ej. Juan Pérez">
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label small fw-semibold text-muted mb-1" for="manualPatientEmail">Email *</label>
+                                        <input type="email" class="form-control form-control-sm" id="manualPatientEmail" placeholder="juan@gmail.com">
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label small fw-semibold text-muted mb-1" for="manualPatientPhone">WhatsApp / Teléfono *</label>
+                                        <input type="tel" class="form-control form-control-sm" id="manualPatientPhone" placeholder="11 2233-4455">
+                                    </div>
+                                </div>
+                                <div class="text-end mt-2">
+                                    <button type="button" class="btn btn-sm btn-success fw-bold" onclick="window.patientModule.saveManualPatientForBooking()">
+                                        <i class="bi bi-check-lg me-1"></i> Usar este Paciente
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. MOTIVO DE CONSULTA Y FECHA -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold text-dark small" for="profBookingReasonSelect">
+                                    <i class="bi bi-tag-fill text-primary me-1"></i> 2. Motivo de Consulta:
+                                </label>
+                                <select class="form-select" id="profBookingReasonSelect" required></select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold text-dark small" for="profBookingDateInput">
+                                    <i class="bi bi-calendar-event-fill text-primary me-1"></i> 3. Fecha del Turno:
+                                </label>
+                                <input type="date" class="form-control" id="profBookingDateInput" required>
+                            </div>
+                        </div>
+
+                        <!-- 3. SELECCIÓN DE HORARIO DISPONIBLE -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label fw-bold text-dark small mb-0">
+                                    <i class="bi bi-clock-fill text-primary me-1"></i> 4. Seleccione el Horario Disponible:
+                                </label>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle small" id="profBookingDurationBadge">30 min</span>
+                            </div>
+                            <div id="profBookingSlotsContainer" class="p-3 bg-light rounded-3 border">
+                                <div class="text-center text-muted small py-2">
+                                    <i class="bi bi-info-circle me-1"></i> Seleccione una fecha para ver los horarios disponibles.
+                                </div>
+                            </div>
+                            <input type="hidden" id="profBookingSelectedSlot" value="">
+                        </div>
+
+                        <!-- BOTONES -->
+                        <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success fw-bold px-4 shadow-sm" id="btnSubmitProfBooking">
+                                <i class="bi bi-calendar-check-fill me-1"></i> Confirmar Turno Odontológico
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: CONFIRMACIÓN LLAMATIVA DE CANCELACIÓN DE TURNO (PACIENTE) -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalConfirmPatientCancellation" tabindex="-1" aria-labelledby="modalCancelTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg text-center overflow-hidden">
+                <!-- Banda superior roja de alerta -->
+                <div class="bg-danger py-2"></div>
+                <div class="modal-body p-4 pt-3">
+                    <!-- Icono destacado de cancelación -->
+                    <div class="mb-3">
+                        <div class="rounded-circle bg-danger-subtle text-danger d-inline-flex align-items-center justify-content-center p-3 shadow-sm" style="width: 80px; height: 80px;">
+                            <i class="bi bi-calendar-x-fill display-4" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    
+                    <h4 class="fw-bold text-danger mb-1" id="modalCancelTitle">¿Desea Cancelar su Turno?</h4>
+                    <p class="text-muted small mb-3">
+                        Al confirmar, su turno será cancelado y el horario quedará inmediatamente disponible para otros pacientes.
+                    </p>
+
+                    <!-- Resumen del turno que se cancelará -->
+                    <div class="card bg-light border-0 p-3 mb-3 text-start small shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <span class="text-muted"><i class="bi bi-person-fill me-1"></i>Paciente:</span>
+                            <strong class="text-dark" id="cancelModalPatientName">-</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <span class="text-muted"><i class="bi bi-calendar3 me-1"></i>Fecha & Hora:</span>
+                            <span class="badge bg-danger fs-6" id="cancelModalDateTime">-</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <span class="text-muted"><i class="bi bi-person-badge me-1"></i>Profesional:</span>
+                            <strong class="text-primary" id="cancelModalDoctor">-</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <span class="text-muted"><i class="bi bi-journal-medical me-1"></i>Motivo:</span>
+                            <span class="fw-semibold text-secondary" id="cancelModalReason">-</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i class="bi bi-geo-alt me-1"></i>Lugar:</span>
+                            <span class="text-muted" id="cancelModalLocation">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Motivo de cancelación opcional -->
+                    <div class="text-start mb-3">
+                        <label for="cancelModalSelectReason" class="form-label small fw-bold text-muted mb-1">
+                            Motivo de cancelación (opcional):
+                        </label>
+                        <select class="form-select form-select-sm" id="cancelModalSelectReason">
+                            <option value="Imprevisto personal o laboral">Imprevisto personal o laboral</option>
+                            <option value="Deseo reprogramar para otra fecha">Deseo reprogramar para otra fecha</option>
+                            <option value="Problema de salud / fuerza mayor">Problema de salud / fuerza mayor</option>
+                            <option value="Ya resolví mi consulta odontológica">Ya resolví mi consulta odontológica</option>
+                            <option value="Otro motivo">Otro motivo</option>
+                        </select>
+                    </div>
+
+                    <div class="alert alert-warning py-2 px-3 small text-start d-flex align-items-center gap-2 mb-0">
+                        <i class="bi bi-exclamation-triangle-fill fs-5 text-warning flex-shrink-0" aria-hidden="true"></i>
+                        <span>Si cancela por error, deberá iniciar una nueva reserva según los turnos libres en la agenda.</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light justify-content-center p-3 gap-2">
+                    <button type="button" class="btn btn-outline-secondary px-4 fw-semibold" data-bs-dismiss="modal">
+                        <i class="bi bi-arrow-left me-1"></i> Conservar Turno
+                    </button>
+                    <button type="button" class="btn btn-danger px-4 fw-bold shadow-sm" id="btnConfirmCancelPatientAppt">
+                        <i class="bi bi-trash3-fill me-1"></i> Sí, Cancelar Turno
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: CANCELACIÓN DE TURNO POR EL PROFESIONAL (BOOTSTRAP MODAL) -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalProfCancelAppointment" tabindex="-1" aria-labelledby="modalProfCancelTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg overflow-hidden">
+                <div class="modal-header bg-danger text-white py-3">
+                    <h5 class="modal-title fw-bold" id="modalProfCancelTitle">
+                        <i class="bi bi-calendar-x me-2"></i>Cancelar Turno Odontológico
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="card bg-light border-0 p-3 mb-3 text-start small shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <span class="text-muted"><i class="bi bi-person-fill me-1"></i>Paciente:</span>
+                            <strong class="text-dark" id="profCancelPatientName">-</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <span class="text-muted"><i class="bi bi-calendar3 me-1"></i>Fecha & Hora:</span>
+                            <span class="badge bg-danger fs-6" id="profCancelDateTime">-</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i class="bi bi-journal-medical me-1"></i>Motivo de Consulta:</span>
+                            <span class="fw-semibold text-secondary" id="profCancelApptReason">-</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label for="profCancelReasonInput" class="form-label small fw-bold text-dark mb-1">
+                            Motivo de la Cancelación <span class="text-muted fw-normal">(opcional)</span>:
+                        </label>
+                        <textarea class="form-control" id="profCancelReasonInput" rows="3" placeholder="Ej: Imprevisto de fuerza mayor, reprogramación acordada, etc. (Puede dejarlo en blanco)"></textarea>
+                        <div class="form-text small text-muted">
+                            Si no especifica un motivo, se registrará como "Cancelado por el profesional".
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning py-2 px-3 small text-start d-flex align-items-center gap-2 mb-0">
+                        <i class="bi bi-exclamation-triangle-fill fs-5 text-warning flex-shrink-0" aria-hidden="true"></i>
+                        <span>El horario quedará liberado en la agenda para ser reservado nuevamente.</span>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light p-3 gap-2">
+                    <button type="button" class="btn btn-outline-secondary px-3 fw-semibold" data-bs-dismiss="modal">
+                        <i class="bi bi-arrow-left me-1"></i> Volver
+                    </button>
+                    <button type="button" class="btn btn-danger px-4 fw-bold shadow-sm" id="btnConfirmProfCancelAppt" onclick="window.professionalModule.confirmCancelAppointment()">
+                        <i class="bi bi-trash3-fill me-1"></i> Confirmar Cancelación
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: EDITAR DATOS DEL PROFESIONAL -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalEditProfessionalProfile" tabindex="-1" aria-labelledby="modalEditProfTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg overflow-hidden">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title fw-bold" id="modalEditProfTitle">
+                        <i class="bi bi-person-gear me-2"></i>Editar Datos del Profesional
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form id="formEditProfessionalProfile" onsubmit="event.preventDefault(); window.professionalModule.saveProfileData();">
+                    <div class="modal-body p-4">
+                        <div class="mb-3 text-start">
+                            <label for="editProfName" class="form-label small fw-bold text-dark mb-1">Nombre y Apellido:</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-primary"><i class="bi bi-person-badge"></i></span>
+                                <input type="text" class="form-control" id="editProfName" placeholder="Ej. Dra. María Elena Gómez" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-3 text-start">
+                            <div class="col-md-6">
+                                <label for="editProfConsultorio" class="form-label small fw-bold text-dark mb-1">Consultorio / Box:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-primary"><i class="bi bi-door-open"></i></span>
+                                    <input type="text" class="form-control" id="editProfConsultorio" placeholder="Ej. Consultorio A" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editProfSpecialty" class="form-label small fw-bold text-dark mb-1">Especialidad Odontológica:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-primary"><i class="bi bi-award"></i></span>
+                                    <select class="form-select" id="editProfSpecialty" required></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 text-start">
+                            <label for="editProfEmail" class="form-label small fw-bold text-dark mb-1">Correo Electrónico:</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-primary"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" id="editProfEmail" placeholder="doctor@dental.com" required>
+                            </div>
+                            <div class="form-text small text-muted">Este correo identifica la cuenta del profesional en el sistema.</div>
+                        </div>
+
+                        <div class="mb-3 text-start">
+                            <label for="editProfPhone" class="form-label small fw-bold text-dark mb-1">
+                                <i class="bi bi-whatsapp text-success me-1"></i>Número de Teléfono / WhatsApp:
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-success"><i class="bi bi-telephone-outbound"></i></span>
+                                <input type="tel" class="form-control" id="editProfPhone" placeholder="Ej. 11 4455-6677" required>
+                            </div>
+                            <div class="form-text small text-muted">
+                                Ingrese su número local (ej. <strong>11 4455-6677</strong>). El código de país (+54 9) permanece <strong>oculto en todo el sistema</strong> y se gestiona automáticamente al generar mensajes de WhatsApp.
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-0 text-start">
+                            <i class="bi bi-info-circle-fill text-info flex-shrink-0 fs-5"></i>
+                            <span>Las especialidades disponibles en el desplegable son gestionadas por la administración del centro.</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light p-3 gap-2">
+                        <button type="button" class="btn btn-outline-secondary px-3 fw-semibold" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm" id="btnSaveProfProfile">
+                            <i class="bi bi-check2-circle me-1"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: CONFIRMACIÓN DE CAMBIOS GUARDADOS (PROFESIONAL) -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalProfileChangesSaved" tabindex="-1" aria-labelledby="modalChangesSavedTitle" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg text-center p-4">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-success-subtle text-success d-inline-flex align-items-center justify-content-center p-3 shadow-sm" style="width: 72px; height: 72px;">
+                        <i class="bi bi-check2-circle display-4"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold text-dark mb-1" id="modalChangesSavedTitle">Cambios guardados</h4>
+                <p class="text-muted small mb-3">
+                    Los datos del profesional se actualizaron correctamente. Actualizando la página...
+                </p>
+                <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <small class="text-primary fw-semibold">Actualizando vista...</small>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm fw-bold w-100 shadow-sm" onclick="window.location.reload()">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Aceptar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: AVISO LLAMATIVO DE CANCELACIÓN EXITOSA -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalCancellationSuccessNotice" tabindex="-1" aria-labelledby="modalCancelSuccessTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg text-center p-4">
+                <div class="text-secondary mb-3">
+                    <div class="rounded-circle bg-secondary-subtle text-secondary d-inline-flex align-items-center justify-content-center p-3 shadow-sm" style="width: 72px; height: 72px;">
+                        <i class="bi bi-clipboard2-x-fill display-5" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold text-dark mb-1" id="modalCancelSuccessTitle">Turno Cancelado</h4>
+                <p class="text-muted small mb-3">
+                    Su turno para el <strong id="cancelSuccessDate">-</strong> con <strong id="cancelSuccessDoctor">-</strong> ha sido cancelado correctamente y el horario quedó disponible.
+                </p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                    <button type="button" class="btn btn-primary px-3 fw-bold" data-bs-dismiss="modal" onclick="window.app.showBookingView()">
+                        <i class="bi bi-calendar-plus me-1"></i> Reservar Nuevo Turno
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL: MODIFICAR TURNO ODONTOLÓGICO -->
+    <!-- ========================================================== -->
+    <div class="modal fade" id="modalModifyPatientAppointment" tabindex="-1" aria-labelledby="modalModifyApptTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title fw-bold" id="modalModifyApptTitle">
+                        <i class="bi bi-pencil-square me-2"></i>Modificar Turno Odontológico
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Ficha del turno actual -->
+                    <div id="modifyApptCurrentSummary" class="mb-3"></div>
+
+                    <!-- Aviso de regla de las 3 horas -->
+                    <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-clock-history fs-5 text-primary flex-shrink-0" aria-hidden="true"></i>
+                        <span><strong>Regla de modificación:</strong> Para el mismo día del turno, los cambios solo pueden realizarse hasta <strong>3 horas antes</strong> del horario asignado. También puede seleccionar otro día disponible con el/la mismo/a profesional.</span>
+                    </div>
+
+                    <div id="modifyApptWarningNotice" class="mb-3 d-none"></div>
+
+                    <!-- Selector de fecha para el mismo día u otro día -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="modifyAppointmentDateInput" class="form-label fw-semibold mb-0">
+                                    <i class="bi bi-calendar-event text-primary me-1"></i> Seleccione el Día <span class="text-danger">*</span>
+                                </label>
+                                <span id="modifyAppointmentDateBadge" class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 small"></span>
+                            </div>
+                            <input type="date" class="form-control form-control-lg" id="modifyAppointmentDateInput" onchange="window.patientModule.handleModifyDateChange(this.value)">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modifyAppointmentReasonSelect" class="form-label fw-semibold">
+                                <i class="bi bi-journal-medical text-primary me-1"></i> Motivo del Turno
+                            </label>
+                            <select class="form-select form-select-lg" id="modifyAppointmentReasonSelect"></select>
+                        </div>
+                    </div>
+
+                    <!-- Horarios disponibles para la nueva fecha -->
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-clock text-primary me-1"></i> Seleccione el Nuevo Horario <span class="text-danger">*</span></span>
+                            <span class="small text-muted">Haga clic en un casillero libre</span>
+                        </label>
+                        <div id="modifyAppointmentSlotsContainer" class="p-3 bg-light rounded-3 border">
+                            <!-- Generado dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light justify-content-between p-3">
+                    <button type="button" class="btn btn-outline-secondary px-4 fw-semibold" data-bs-dismiss="modal">
+                        <i class="bi bi-arrow-left me-1"></i> Conservar Turno Actual
+                    </button>
+                    <button type="button" class="btn btn-primary px-4 fw-bold shadow-sm" id="btnConfirmModifyPatientAppt" onclick="window.patientModule.executeModifyAppointment()">
+                        <i class="bi bi-check2-circle me-1"></i> Confirmar Cambio de Turno
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TOAST CONTAINER PARA ALERTAS FLOTANTES (AL FRENTE Y CENTRO DE LA PANTALLA) -->
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3" id="toastContainer" style="z-index: 10999; pointer-events: none;" aria-live="assertive"></div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-top py-4 mt-auto">
+        <div class="container text-center text-muted small">
+            <div class="mb-2">
+                <strong class="brand-clinic-name">Centro Odontológico Sonrisas & Salud</strong> - Sistema de Agenda Virtual
+            </div>
+            <div>
+                Diseño responsive y accesible (WCAG). Gestión de turnos con Google Sign-In.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Módulos de la Aplicación -->
+    <script src="js/storage.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/patient.js"></script>
+    <script src="js/secretary.js"></script>
+    <script src="js/professional.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
